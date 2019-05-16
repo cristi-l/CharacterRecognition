@@ -35,9 +35,9 @@ namespace CharacterRecognition
                     var c = bitmap.GetPixel(i, j);
                     var gray = (c.R + c.G + c.B) / 3;
                     if (gray < 20)
-                        binarizedValues.Append(0);
+                        binarizedValues.Add(1);
                     else
-                        binarizedValues.Append(1);
+                        binarizedValues.Add(0);
                 }
             }
             return binarizedValues.ToArray();
@@ -57,4 +57,5 @@ namespace CharacterRecognition
             return returnValue;
         }
     }
+
 }

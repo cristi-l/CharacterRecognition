@@ -93,13 +93,13 @@ namespace CharacterRecognition
 
         void Assert(double[][] examples, double[][] targets)
         {
-            //the number of input examples must match the number of input neurons
+            //the size of input examples must match the number of input neurons
             Debug.Assert(examples[0].Length == inputNeuronsNumber);
 
-            //the number of targets (results) must match the number of output neurons
+            //the size of targets (results) must match the number of output neurons
             Debug.Assert(targets[0].Length == outputNeuronsNumber);
 
-            //the number of input example must match the number of results
+            //the size of input example must match the number of results
             Debug.Assert(examples.Length == targets.Length);
         }
 
@@ -122,7 +122,7 @@ namespace CharacterRecognition
             {
                 E = TrainEpoch(examples, targets);
 
-                Debug.WriteLine("E= " + E);
+                //Debug.WriteLine("E= " + E);
                 t++;
             }
         }
