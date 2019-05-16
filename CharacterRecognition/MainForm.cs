@@ -16,5 +16,10 @@ namespace CharacterRecognition
         {
             InitializeComponent();
         }
+
+        private void ButtonInit_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

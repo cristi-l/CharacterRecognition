@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -39,6 +41,20 @@ namespace CharacterRecognition
                 }
             }
             return binarizedValues.ToArray();
+        }
+    }
+
+    public class ImageLoader
+    {
+        public List<double[]> LoadImages(string path)
+        {
+            var returnValue = new List<double[]>();
+            foreach (var file in Directory.EnumerateFiles(path))
+            {
+               returnValue.Add( Utils.BmpToDoubleArray(new Bitmap(file)));
+            }
+
+            return returnValue;
         }
     }
 }

@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backpropagation.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -54,6 +55,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -123,32 +127,32 @@
     <Content Include="Characters\Fonts20x32\7.bmp" />
     <Content Include="Characters\Fonts20x32\8.bmp" />
     <Content Include="Characters\Fonts20x32\9.bmp" />
-    <Content Include="Characters\Fonts20x32\a.bmp" />
-    <Content Include="Characters\Fonts20x32\b.bmp" />
-    <Content Include="Characters\Fonts20x32\c.bmp" />
-    <Content Include="Characters\Fonts20x32\d.bmp" />
-    <Content Include="Characters\Fonts20x32\e.bmp" />
-    <Content Include="Characters\Fonts20x32\f.bmp" />
-    <Content Include="Characters\Fonts20x32\g.bmp" />
-    <Content Include="Characters\Fonts20x32\h.bmp" />
-    <Content Include="Characters\Fonts20x32\i.bmp" />
-    <Content Include="Characters\Fonts20x32\j.bmp" />
-    <Content Include="Characters\Fonts20x32\k.bmp" />
-    <Content Include="Characters\Fonts20x32\l.bmp" />
-    <Content Include="Characters\Fonts20x32\m.bmp" />
-    <Content Include="Characters\Fonts20x32\n.bmp" />
-    <Content Include="Characters\Fonts20x32\o.bmp" />
-    <Content Include="Characters\Fonts20x32\p.bmp" />
-    <Content Include="Characters\Fonts20x32\q.bmp" />
-    <Content Include="Characters\Fonts20x32\r.bmp" />
-    <Content Include="Characters\Fonts20x32\s.bmp" />
-    <Content Include="Characters\Fonts20x32\t.bmp" />
-    <Content Include="Characters\Fonts20x32\u.bmp" />
-    <Content Include="Characters\Fonts20x32\v.bmp" />
-    <Content Include="Characters\Fonts20x32\w.bmp" />
-    <Content Include="Characters\Fonts20x32\x.bmp" />
-    <Content Include="Characters\Fonts20x32\y.bmp" />
-    <Content Include="Characters\Fonts20x32\z.bmp" />
+    <Content Include="Characters\class1\a.bmp" />
+    <Content Include="Characters\class2\b.bmp" />
+    <Content Include="Characters\class1\c.bmp" />
+    <Content Include="Characters\class2\d.bmp" />
+    <Content Include="Characters\class1\e.bmp" />
+    <Content Include="Characters\class3\f.bmp" />
+    <Content Include="Characters\class4\g.bmp" />
+    <Content Include="Characters\class2\h.bmp" />
+    <Content Include="Characters\class3\i.bmp" />
+    <Content Include="Characters\class3\j.bmp" />
+    <Content Include="Characters\class6\k.bmp" />
+    <Content Include="Characters\class3\l.bmp" />
+    <Content Include="Characters\class5\m.bmp" />
+    <Content Include="Characters\class5\n.bmp" />
+    <Content Include="Characters\class1\o.bmp" />
+    <Content Include="Characters\class4\p.bmp" />
+    <Content Include="Characters\class4\q.bmp" />
+    <Content Include="Characters\class5\r.bmp" />
+    <Content Include="Characters\class1\s.bmp" />
+    <Content Include="Characters\class3\t.bmp" />
+    <Content Include="Characters\class1\u.bmp" />
+    <Content Include="Characters\class1\v.bmp" />
+    <Content Include="Characters\class5\w.bmp" />
+    <Content Include="Characters\class6\x.bmp" />
+    <Content Include="Characters\class4\y.bmp" />
+    <Content Include="Characters\class6\z.bmp" />
     <Content Include="Characters\Fonts5x8\#Sablon.jpg" />
     <Content Include="Characters\Fonts5x8\0.jpg" />
     <Content Include="Characters\Fonts5x8\1.jpg" />
