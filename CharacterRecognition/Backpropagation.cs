@@ -56,24 +56,24 @@ namespace CharacterRecognition
         double ActivationFunction(double x)
         {
             //sigmoid
-            var num = 1 + Math.Exp(-x);
-            var res = 1.0 / num;
+            //var num = ;
+            //var res = 
 
 
-            if (double.IsInfinity(res) || double.IsNaN(res)) Debug.WriteLine("BUG");
+            //if (double.IsInfinity(res) || double.IsNaN(res)) Debug.WriteLine("BUG");
 
-            return res;
+            return 1.0 / (1 + Math.Exp(-x));
         }
 
         double ActivationFunctionDerived(double x)
         {
-            var fx = x; //ActivationFunction(x)
-            var res = fx * (1.0 - fx);
+            //var fx = x; //ActivationFunction(x)
+            //var res = fx * (1.0 - fx);
 
 
-            if (double.IsInfinity(res) || double.IsNaN(res)) Debug.WriteLine("BUG");
+            //if (double.IsInfinity(res) || double.IsNaN(res)) Debug.WriteLine("BUG");
 
-            return res;
+            return (x*(1.0-x));
         }
 
         void InitWeights()
