@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace CharacterRecognition
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
@@ -51,7 +51,8 @@ namespace CharacterRecognition
             var returnValue = new List<double[]>();
             foreach (var file in Directory.EnumerateFiles(path))
             {
-               returnValue.Add( Utils.BmpToDoubleArray(new Bitmap(file)));
+                if(file.EndsWith(".bmp"))
+                    returnValue.Add( Utils.BmpToDoubleArray(new Bitmap(file)));
             }
 
             return returnValue;
