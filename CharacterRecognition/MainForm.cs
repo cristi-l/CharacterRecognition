@@ -40,22 +40,22 @@ namespace CharacterRecognition
 
         void buttonBackpropagation_Click(object sender, EventArgs e)
         {
-            foreach (var example in images)
+            foreach (var classImages in images)
             {
-                var output = new double[example.Count][];
-                var img = new double[example.Count][];
-                for (int i = 0; i < example.Count; i++)
+                var output = new double[classImages.Count][];
+                var img = new double[classImages.Count][];
+                for (int i = 0; i < classImages.Count; i++)
                 {
-                    img[i] = example[i];
-                    for (int j = 0; j < example.Count; j++)
-                        output[i] = new double[example.Count];
-                    for (int j = 0; j < example.Count; j++)
+                    img[i] = classImages[i];
+                    for (int j = 0; j < classImages.Count; j++)
+                        output[i] = new double[classImages.Count];
+                    for (int j = 0; j < classImages.Count; j++)
                         if (i == j)
                             output[i][j] = 1;
                         else
                             output[i][j] = 0;
                 }
-                var network = new Backpropagation(img[0].Length, 200, example.Count);
+                var network = new Backpropagation(img[0].Length, 200, classImages.Count);
                 network.Train(img, output);
                 backpropagation.Add(network);
             }
