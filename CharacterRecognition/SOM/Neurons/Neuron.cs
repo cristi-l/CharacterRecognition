@@ -9,8 +9,8 @@ namespace CharacterRecognition.SOM.Neurons
 {
     class Neuron: INeuron
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
         public IVector Weights { get; }
 
         public Neuron(int numOfWeights)

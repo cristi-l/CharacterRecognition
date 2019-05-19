@@ -9,8 +9,8 @@ namespace CharacterRecognition.SOM.Neurons
 {
     public interface INeuron
     {
-        int X { get; set; }
-        int Y { get; set; }
+        double X { get; set; }
+        double Y { get; set; }
         IVector Weights { get; }
 
         double Distance(INeuron neuron);
