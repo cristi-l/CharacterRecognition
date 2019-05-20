@@ -1,32 +1,25 @@
-﻿using CharacterRecognition.SOM.Vectors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using CharacterRecognition.SOM.Vectors;
 
 namespace CharacterRecognition.SOM.Neurons
 {
-    class Neuron: INeuron
+    internal class Neuron : INeuron
     {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public IVector Weights { get; }
-
         public Neuron(int numOfWeights)
         {
             var random = new Random();
             Weights = new Vector();
 
-            for (int i = 0; i < numOfWeights; i++)
-            {
-                Weights.Add(random.NextDouble());
-            }
+            for (var i = 0; i < numOfWeights; i++) Weights.Add(random.NextDouble());
         }
+
+        public double X { get; set; }
+        public double Y { get; set; }
+        public IVector Weights { get; }
 
         public double Distance(INeuron neuron)
         {
-            return Math.Pow((X - neuron.X), 2) + Math.Pow((Y - neuron.Y), 2);
+            return Math.Pow(X - neuron.X, 2) + Math.Pow(Y - neuron.Y, 2);
         }
 
         public void SetWeight(int index, double value)
@@ -50,11 +43,8 @@ namespace CharacterRecognition.SOM.Neurons
             if (input.Count != Weights.Count)
                 throw new ArgumentException("Wrong input!");
 
-            for (int i = 0; i < Weights.Count; i++)
-            {
+            for (var i = 0; i < Weights.Count; i++)
                 Weights[i] += distanceDecay * learningRate * (input[i] - Weights[i]);
-            }
-
         }
     }
 }

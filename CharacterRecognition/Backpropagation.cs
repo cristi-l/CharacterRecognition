@@ -8,6 +8,10 @@ namespace CharacterRecognition
     public class Backpropagation
     {
         readonly double learningStep = 0.6; // Math.Pow(10, -1);
+
+        readonly Random rand = new Random(42);
+        double[] biasHidden; //bias value of the "h" neuron in the hidden layer
+        double[] biasOutput; //bias value of the "o" neuron in the output layer
         int hiddenNeuronsNumber;
 
         double[] hiddenValue; //value of the neuron "h" from the hidden layer
@@ -19,15 +23,13 @@ namespace CharacterRecognition
         int outputNeuronsNumber;
         double[] outputValue; //value of the neuron "o" from the output layer
 
-        readonly Random rand = new Random(42);
-        double[] biasHidden; //bias value of the "h" neuron in the hidden layer
-        double[] biasOutput; //bias value of the "o" neuron in the output layer
-
         //prag = threshold
 
-        double[][] w12; //the weight of the link between the neuron "h" from the hidden layer (2) with the neuron "i" from the input layer
+        double[][]
+            w12; //the weight of the link between the neuron "h" from the hidden layer (2) with the neuron "i" from the input layer
 
-        double[][] w23; //the weight of the link between the neuron "o" in the output layer (3) with the neuron "h" from the hidden layer
+        double[][]
+            w23; //the weight of the link between the neuron "o" in the output layer (3) with the neuron "h" from the hidden layer
 
         public Backpropagation(int inputNeuronsNumber, int hiddenNeuronsNumber, int outputNeuronsNumber)
         {
@@ -57,9 +59,15 @@ namespace CharacterRecognition
         }
 
         //activation function
-        double ActivationFunction(double x) => 1.0 / (1 + Math.Exp(-x));
+        double ActivationFunction(double x)
+        {
+            return 1.0 / (1 + Math.Exp(-x));
+        }
 
-        double ActivationFunctionDerived(double x) => (x * (1.0 - x));
+        double ActivationFunctionDerived(double x)
+        {
+            return x * (1.0 - x);
+        }
 
         void InitWeights()
         {
@@ -68,6 +76,7 @@ namespace CharacterRecognition
                 biasHidden[h] = rand.NextDouble();
                 for (var i = 0; i < inputNeuronsNumber; i++) w12[h][i] = rand.NextDouble() - 0.5;
             }
+
             for (var o = 0; o < outputNeuronsNumber; o++)
             {
                 biasOutput[o] = rand.NextDouble();
@@ -77,6 +86,8 @@ namespace CharacterRecognition
 
         void Assert(double[][] examples, double[][] targets)
         {
+            if (examples == null) throw new ArgumentNullException(nameof(examples));
+            if (targets == null) throw new ArgumentNullException(nameof(targets));
             //the size of input examples must match the number of input neurons
             Debug.Assert(examples[0].Length == inputNeuronsNumber);
             //the size of targets (results) must match the number of output neurons
@@ -95,11 +106,10 @@ namespace CharacterRecognition
         public void Train(double[][] examples, double[][] targets)
         {
             Assert(examples, targets);
-            var E = double.MaxValue;
             var t = 0;
-            while (t < 1000)
+            while (t < 2000)
             {
-                E = TrainEpoch(examples, targets);
+                TrainEpoch(examples, targets);
                 //Debug.WriteLine("E= " + E);
                 t++;
             }
@@ -107,15 +117,16 @@ namespace CharacterRecognition
 
         public double TrainEpoch(double[][] examples, double[][] targets)
         {
-            double E = 0;
+            double e = 0;
             for (var i = 0; i < examples.Length; i++)
             {
                 //take each example and Run it through the network
                 Forward(examples[i]);
-                E += ComputeError(examples[i], targets[i]);
+                e += ComputeError(targets[i]);
                 Backward(targets[i]);
             }
-            return E;
+
+            return e;
         }
 
         void Forward(double[] example)
@@ -156,7 +167,7 @@ namespace CharacterRecognition
             }
         }
 
-        double ComputeError(double[] example, double[] target)
+        double ComputeError(double[] target)
         {
             double error = 0;
             for (var o = 0; o < outputNeuronsNumber; o++) error += Math.Pow(outputValue[o] - target[o], 2);
@@ -195,30 +206,30 @@ namespace CharacterRecognition
         void UpdateWeightsInputHiddenLayer(double[] target)
         {
             for (var h = 0; h < hiddenNeuronsNumber; h++)
-                for (var i = 0; i < inputNeuronsNumber; i++)
-                {
-                    double sum = 0;
-                    for (var o = 0; o < outputNeuronsNumber; o++)
-                        sum += (outputValue[o] - target[o]) * ActivationFunctionDerived(outputValue[o]) * w23[o][h];
-                    var dw = 2 * sum * ActivationFunctionDerived(hiddenValue[h]) * inputValue[i];
-                    w12[h][i] = w12[h][i] - learningStep * dw;
-                }
+            for (var i = 0; i < inputNeuronsNumber; i++)
+            {
+                double sum = 0;
+                for (var o = 0; o < outputNeuronsNumber; o++)
+                    sum += (outputValue[o] - target[o]) * ActivationFunctionDerived(outputValue[o]) * w23[o][h];
+                var dw = 2 * sum * ActivationFunctionDerived(hiddenValue[h]) * inputValue[i];
+                w12[h][i] = w12[h][i] - learningStep * dw;
+            }
         }
 
         void UpdateWeightsHiddenOutputLayer(double[] target)
         {
             for (var o = 0; o < outputNeuronsNumber; o++)
-                for (var h = 0; h < hiddenNeuronsNumber; h++)
-                {
-                    var dw = 2 * (outputValue[o] - target[o]) * ActivationFunctionDerived(outputValue[o]) * hiddenValue[h];
-                    w23[o][h] = w23[o][h] - learningStep * dw;
-                }
+            for (var h = 0; h < hiddenNeuronsNumber; h++)
+            {
+                var dw = 2 * (outputValue[o] - target[o]) * ActivationFunctionDerived(outputValue[o]) * hiddenValue[h];
+                w23[o][h] = w23[o][h] - learningStep * dw;
+            }
         }
 
         public string SaveWeights(string path)
         {
             var s = new StringBuilder();
-
+            s.AppendLine($"{inputNeuronsNumber} {hiddenNeuronsNumber} {outputNeuronsNumber}");
             s.AppendLine($"w12 {w12.Length} {w12[0].Length}");
             for (var i = 0; i < w12.Length; i++)
                 s.AppendLine(string.Join(",", w12[i]));
@@ -242,13 +253,20 @@ namespace CharacterRecognition
         {
             using (var sr = new StreamReader(path))
             {
-                while (!sr.EndOfStream)
+                var line = sr.ReadLine();
+                var items = line?.Split(' ');
+                if (items != null)
                 {
-                    var line = sr.ReadLine();
-                    var items = line.Split(' ');
-                    switch (items[0])
+                    inputNeuronsNumber = int.Parse(items[0]);
+                    hiddenNeuronsNumber = int.Parse(items[1]);
+                    outputNeuronsNumber = int.Parse(items[2]);
+                    while (!sr.EndOfStream)
                     {
-                        case "w12":
+                        line = sr.ReadLine();
+                        items = line?.Split(' ');
+                        switch (items?[0])
+                        {
+                            case "w12":
                             {
                                 var dim1 = int.Parse(items[1]);
                                 var dim2 = int.Parse(items[2]);
@@ -263,14 +281,14 @@ namespace CharacterRecognition
                                 for (var i = 0; i < dim1; i++)
                                 {
                                     var l = sr.ReadLine();
-                                    var values = l.Split(',');
-                                    if (values.Length == dim2)
+                                    var values = l?.Split(',');
+                                    if (values != null && values.Length == dim2)
                                         for (var j = 0; j < values.Length; j++)
                                             w12[i][j] = double.Parse(values[j]);
                                 }
                             }
-                            break;
-                        case "w23":
+                                break;
+                            case "w23":
                             {
                                 var dim1 = int.Parse(items[1]);
                                 outputNeuronsNumber = dim1;
@@ -283,14 +301,14 @@ namespace CharacterRecognition
                                 for (var i = 0; i < dim1; i++)
                                 {
                                     var l = sr.ReadLine();
-                                    var values = l.Split(',');
-                                    if (values.Length == dim2)
+                                    var values = l?.Split(',');
+                                    if (values != null && values.Length == dim2)
                                         for (var j = 0; j < values.Length; j++)
                                             w23[i][j] = double.Parse(values[j]);
                                 }
                             }
-                            break;
-                        case "biasHidden":
+                                break;
+                            case "biasHidden":
                             {
                                 var dim1 = int.Parse(items[1]);
                                 biasHidden = new double[dim1];
@@ -299,8 +317,8 @@ namespace CharacterRecognition
                                     if (values != null && values.Length == dim1)
                                         biasHidden[i] = double.Parse(values[i]);
                             }
-                            break;
-                        case "biasOutput":
+                                break;
+                            case "biasOutput":
                             {
                                 var dim1 = int.Parse(items[1]);
                                 biasOutput = new double[dim1];
@@ -309,7 +327,8 @@ namespace CharacterRecognition
                                     if (values != null && values.Length == dim1)
                                         biasOutput[i] = double.Parse(values[i]);
                             }
-                            break;
+                                break;
+                        }
                     }
                 }
             }

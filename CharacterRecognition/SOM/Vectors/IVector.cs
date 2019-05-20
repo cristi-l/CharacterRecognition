@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace CharacterRecognition.SOM.Vectors
 {
-    public interface IVector: IList<double>
+    public interface IVector : IList<double>
     {
         double EuclidianDistance(IVector vector);
     }

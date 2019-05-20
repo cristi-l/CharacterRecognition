@@ -1,72 +1,65 @@
-﻿using CharacterRecognition.SOM.Neurons;
+﻿using System;
+using CharacterRecognition.SOM.Neurons;
 using CharacterRecognition.SOM.Vectors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace CharacterRecognition.SOM
 {
-    class Kohonen
+    internal class Kohonen
     {
-        internal INeuron[,] _matrix;
-        internal int _height;
-        internal int _width;
-        internal double _matrixRadius;
-        internal double _numberOfIterations;
-        internal double _timeConstant;
-        internal double _learningRate;
+        internal int Height;
+        internal double LearningRate;
+        internal INeuron[,] Matrix;
+        internal double MatrixRadius;
+        internal double NumberOfIterations;
+        internal double TimeConstant;
+        internal int Width;
 
         public Kohonen(int width, int height, int inputDimension, int numberOfIterations, double learningRate)
         {
-            _width = width;
-            _height = height;
-            _matrix = new INeuron[_width, _height];
-            _numberOfIterations = numberOfIterations;
-            _learningRate = learningRate;
+            Width = width;
+            Height = height;
+            Matrix = new INeuron[Width, Height];
+            NumberOfIterations = numberOfIterations;
+            LearningRate = learningRate;
 
-            _matrixRadius = Math.Max(_width, _height) / 2;
-            _timeConstant = _numberOfIterations / Math.Log(_matrixRadius);
+            MatrixRadius = Math.Max(Width, Height) / 2;
+            TimeConstant = NumberOfIterations / Math.Log(MatrixRadius);
 
             InitializeConnections(inputDimension);
         }
 
         public double Train(Vector[] input)
         {
-            int iteration = 0;
-            var learningRate = _learningRate;
-            double distance = 0.0;
+            var iteration = 0;
+            var learningRate = LearningRate;
+            var distance = 0.0;
 
-            while (iteration < _numberOfIterations)
+            while (iteration < NumberOfIterations)
             {
                 var currentRadius = CalculateNeighborhoodRadius(iteration);
 
-                for (int i = 0; i < input.Length; i++)
+                for (var i = 0; i < input.Length; i++)
                 {
                     var currentInput = input[i];
-                    var bmu = CalculateBMU(currentInput);
+                    var bmu = CalculateBmu(currentInput);
 
-                    (int xStart, int xEnd, int yStart, int yEnd) = GetRadiusIndexes(bmu, currentRadius);
+                    var (xStart, xEnd, yStart, yEnd) = GetRadiusIndexes(bmu, currentRadius);
 
-                    for (int x = xStart; x < xEnd; x++)
+                    for (var x = xStart; x < xEnd; x++)
+                    for (var y = yStart; y < yEnd; y++)
                     {
-                        for (int y = yStart; y < yEnd; y++)
+                        var processingNeuron = GetNeuron(x, y);
+                        distance = bmu.Distance(processingNeuron);
+                        if (distance <= Math.Pow(currentRadius, 2.0))
                         {
-                            var processingNeuron = GetNeuron(x, y);
-                            distance = bmu.Distance(processingNeuron);
-                            if (distance <= Math.Pow(currentRadius, 2.0))
-                            {
-                                var distanceDrop = GetDistanceDrop(distance, currentRadius);
-                                processingNeuron.UpdateWeights(currentInput, learningRate, distanceDrop);
-                            }
-                            
+                            var distanceDrop = GetDistanceDrop(distance, currentRadius);
+                            processingNeuron.UpdateWeights(currentInput, learningRate, distanceDrop);
                         }
                     }
                 }
+
                 iteration++;
-                learningRate = _learningRate * Math.Exp(-(double)iteration / _numberOfIterations);
+                learningRate = LearningRate * Math.Exp(-(double) iteration / NumberOfIterations);
             }
 
             return distance;
@@ -74,32 +67,32 @@ namespace CharacterRecognition.SOM
 
         (int xStart, int xEnd, int yStart, int yEnd) GetRadiusIndexes(INeuron bmu, double currentRadius)
         {
-            var xStart = (int)(bmu.X - currentRadius - 1);
-            xStart = (xStart < 0) ? 0 : xStart;
+            var xStart = (int) (bmu.X - currentRadius - 1);
+            xStart = xStart < 0 ? 0 : xStart;
 
-            var xEnd = (int)(xStart + (currentRadius * 2) + 1);
-            if (xEnd > _width) xEnd = _width;
+            var xEnd = (int) (xStart + currentRadius * 2 + 1);
+            if (xEnd > Width) xEnd = Width;
 
-            var yStart = (int)(bmu.Y - currentRadius - 1);
-            yStart = (yStart < 0) ? 0 : yStart;
+            var yStart = (int) (bmu.Y - currentRadius - 1);
+            yStart = yStart < 0 ? 0 : yStart;
 
-            var yEnd = (int)(yStart + (currentRadius * 2) + 1);
-            if (yEnd > _height) yEnd = _height;
+            var yEnd = (int) (yStart + currentRadius * 2 + 1);
+            if (yEnd > Height) yEnd = Height;
 
             return (xStart, xEnd, yStart, yEnd);
         }
 
         INeuron GetNeuron(int indexX, int indexY)
         {
-            if (indexX > _width || indexY > _height)
+            if (indexX > Width || indexY > Height)
                 throw new ArgumentException("Wrong index!");
 
-            return _matrix[indexX, indexY];
+            return Matrix[indexX, indexY];
         }
 
         double CalculateNeighborhoodRadius(double itteration)
         {
-            return _matrixRadius * Math.Exp(-itteration / _timeConstant);
+            return MatrixRadius * Math.Exp(-itteration / TimeConstant);
         }
 
         double GetDistanceDrop(double distance, double radius)
@@ -107,36 +100,30 @@ namespace CharacterRecognition.SOM
             return Math.Exp(-(Math.Pow(distance, 2.0) / Math.Pow(radius, 2.0)));
         }
 
-        INeuron CalculateBMU(IVector input)
+        INeuron CalculateBmu(IVector input)
         {
-            INeuron bmu = _matrix[0, 0];
-            double bestDist = input.EuclidianDistance(bmu.Weights);
+            var bmu = Matrix[0, 0];
+            var bestDist = input.EuclidianDistance(bmu.Weights);
 
-            for (int i = 0; i < _width; i++)
+            for (var i = 0; i < Width; i++)
+            for (var j = 0; j < Height; j++)
             {
-                for (int j = 0; j < _height; j++)
+                var distance = input.EuclidianDistance(Matrix[i, j].Weights);
+                if (distance < bestDist)
                 {
-                    var distance = input.EuclidianDistance(_matrix[i, j].Weights);
-                    if (distance < bestDist)
-                    {
-                        bmu = _matrix[i, j];
-                        bestDist = distance;
-                    }
+                    bmu = Matrix[i, j];
+                    bestDist = distance;
                 }
             }
 
             return bmu;
         }
 
-        private void InitializeConnections(int inputDimension)
+        void InitializeConnections(int inputDimension)
         {
-            for (int i = 0; i < _width; i++)
-            {
-                for (int j = 0; j < _height; j++)
-                {
-                    _matrix[i, j] = new Neuron(inputDimension) { X = i, Y = j };
-                }
-            }
+            for (var i = 0; i < Width; i++)
+            for (var j = 0; j < Height; j++)
+                Matrix[i, j] = new Neuron(inputDimension) {X = i, Y = j};
         }
     }
 }

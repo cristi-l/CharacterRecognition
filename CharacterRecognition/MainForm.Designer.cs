@@ -116,7 +116,7 @@
             this.buttonLoadWeights.UseVisualStyleBackColor = true;
             this.buttonLoadWeights.Click += new System.EventHandler(this.ButtonLoadWeights_Click);
             // 
-            // MainForm
+            // Resources
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
