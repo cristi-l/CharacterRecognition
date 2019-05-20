@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CharacterRecognition.SOM;
+using CharacterRecognition.SOM.Vectors;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +17,7 @@ namespace CharacterRecognition
     {
         readonly List<List<double[]>> images = new List<List<double[]>>();
         readonly List<Backpropagation> backpropagation = new List<Backpropagation>();
+        readonly List<Kohonen> somMaps = new List<Kohonen>();
 
         public MainForm()
         {
@@ -25,7 +28,8 @@ namespace CharacterRecognition
         {
             using (var folderBrowser = new FolderBrowserDialog())
             {
-                folderBrowser.SelectedPath = @"C:\Users\Larisa\Source\Repos\CharacterRecognition\CharacterRecognition\Characters";
+                
+                folderBrowser.SelectedPath = @"C:\Users\Diana\Documents\CharacterRecognition\CharacterRecognition\Characters";
                 DialogResult result = folderBrowser.ShowDialog();
                 var imageLoader = new ImageLoader();
 
@@ -40,22 +44,22 @@ namespace CharacterRecognition
 
         void buttonBackpropagation_Click(object sender, EventArgs e)
         {
-            foreach (var example in images)
+            foreach (var classImages in images)
             {
-                var output = new double[example.Count][];
-                var img = new double[example.Count][];
-                for (int i = 0; i < example.Count; i++)
+                var output = new double[classImages.Count][];
+                var img = new double[classImages.Count][];
+                for (int i = 0; i < classImages.Count; i++)
                 {
-                    img[i] = example[i];
-                    for (int j = 0; j < example.Count; j++)
-                        output[i] = new double[example.Count];
-                    for (int j = 0; j < example.Count; j++)
+                    img[i] = classImages[i];
+                    for (int j = 0; j < classImages.Count; j++)
+                        output[i] = new double[classImages.Count];
+                    for (int j = 0; j < classImages.Count; j++)
                         if (i == j)
                             output[i][j] = 1;
                         else
                             output[i][j] = 0;
                 }
-                var network = new Backpropagation(img[0].Length, 200, example.Count);
+                var network = new Backpropagation(img[0].Length, 200, classImages.Count);
                 network.Train(img, output);
                 backpropagation.Add(network);
                 network.SaveWeights($"perceptron{images.IndexOf(example)}.bp");
@@ -78,6 +82,58 @@ namespace CharacterRecognition
                 labelClass.Text = String.Join(" ", output);
                 labelClass.Refresh();
 
+            }
+        }
+
+        private void TrainSOMButton_Click(object sender, EventArgs e)
+        {
+            IVector inputVector = null;
+           
+            foreach (var classImages in images)
+            {
+                var input = new Vector[classImages.Count];
+                int index = 0;
+
+                foreach(var image in classImages)
+                {
+                    inputVector = new Vector();
+                    foreach(var value in image)
+                    {
+                        inputVector.Add(value);
+                    }
+                    input[index++] = (Vector)inputVector;
+                }
+
+                var som = new Kohonen(5, 5, inputVector.Count, 100, 0.5);
+                som.Train(input);
+                somMaps.Add(som);
+            }
+            MessageBox.Show("Done training SOM");
+        }
+
+        private void TestSOMButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = false;
+            openFileDialog.Filter = "bmp (*.bmp)|*.bmp";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                var input = Utils.BmpToDoubleArray(new Bitmap(openFileDialog.FileName));
+               
+                var inputVector = new Vector();
+                foreach(var inputValue in input)
+                {
+                   inputVector.Add(inputValue);
+                }
+
+                var distances = new List<double>();
+                foreach(var som in somMaps)
+                {
+                    distances.Add(som.Train(new Vector[] { inputVector }));
+                }
+
+                MessageBox.Show(String.Join(", ", distances));
             }
         }
 

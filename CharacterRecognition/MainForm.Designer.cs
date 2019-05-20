@@ -33,6 +33,8 @@
             this.buttonTest = new System.Windows.Forms.Button();
             this.labelClass = new System.Windows.Forms.Label();
             this.textBoxClass = new System.Windows.Forms.TextBox();
+            this.trainSOMButton = new System.Windows.Forms.Button();
+            this.testSOMButton = new System.Windows.Forms.Button();
             this.buttonLoadWeights = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -83,6 +85,27 @@
             this.textBoxClass.TabIndex = 4;
             this.textBoxClass.Text = "0";
             // 
+            // trainSOMButton
+            // 
+            this.trainSOMButton.Location = new System.Drawing.Point(12, 115);
+            this.trainSOMButton.Name = "trainSOMButton";
+            this.trainSOMButton.Size = new System.Drawing.Size(150, 23);
+            this.trainSOMButton.TabIndex = 5;
+            this.trainSOMButton.Text = "Train SOM";
+            this.trainSOMButton.UseVisualStyleBackColor = true;
+            this.trainSOMButton.Click += new System.EventHandler(this.TrainSOMButton_Click);
+            // 
+            // testSOMButton
+            // 
+            this.testSOMButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.testSOMButton.Location = new System.Drawing.Point(12, 153);
+            this.testSOMButton.Name = "testSOMButton";
+            this.testSOMButton.Size = new System.Drawing.Size(150, 23);
+            this.testSOMButton.TabIndex = 6;
+            this.testSOMButton.Text = "Test SOM";
+            this.testSOMButton.UseVisualStyleBackColor = true;
+            this.testSOMButton.Click += new System.EventHandler(this.TestSOMButton_Click);
+            // 
             // buttonLoadWeights
             // 
             this.buttonLoadWeights.Location = new System.Drawing.Point(12, 41);
@@ -98,6 +121,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.testSOMButton);
+            this.Controls.Add(this.trainSOMButton);
             this.Controls.Add(this.buttonLoadWeights);
             this.Controls.Add(this.textBoxClass);
             this.Controls.Add(this.labelClass);
@@ -118,6 +143,8 @@
         private System.Windows.Forms.Button buttonTest;
         private System.Windows.Forms.Label labelClass;
         private System.Windows.Forms.TextBox textBoxClass;
+        private System.Windows.Forms.Button trainSOMButton;
+        private System.Windows.Forms.Button testSOMButton;
         private System.Windows.Forms.Button buttonLoadWeights;
     }
 }
