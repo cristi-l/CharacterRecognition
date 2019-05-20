@@ -1,31 +1,33 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 namespace CharacterRecognition
 {
     public class Backpropagation
     {
         readonly double learningStep = 0.6; // Math.Pow(10, -1);
-        readonly int hiddenNeuronsNumber;
+        int hiddenNeuronsNumber;
 
-        readonly double[] hiddenValue; //value of the neuron "h" from the hidden layer
+        double[] hiddenValue; //value of the neuron "h" from the hidden layer
 
         //number of neurons on each of the 3 layers
-        readonly int inputNeuronsNumber;
+        int inputNeuronsNumber;
 
-        readonly double[] inputValue; //value of the neuron "i" from the input layer
-        readonly int outputNeuronsNumber;
-        readonly double[] outputValue; //value of the neuron "o" from the output layer
+        double[] inputValue; //value of the neuron "i" from the input layer
+        int outputNeuronsNumber;
+        double[] outputValue; //value of the neuron "o" from the output layer
 
         readonly Random rand = new Random(42);
-        readonly double[] thresholdHidden; //threshold value of the "h" neuron in the hidden layer
-        readonly double[] thresholdOutput; //threshold value of the "o" neuron in the output layer
+        double[] biasHidden; //bias value of the "h" neuron in the hidden layer
+        double[] biasOutput; //bias value of the "o" neuron in the output layer
 
         //prag = threshold
 
-        readonly double[][] w12; //the weight of the link between the neuron "h" from the hidden layer (2) with the neuron "i" from the input layer
+        double[][] w12; //the weight of the link between the neuron "h" from the hidden layer (2) with the neuron "i" from the input layer
 
-        readonly double[][] w23; //the weight of the link between the neuron "o" in the output layer (3) with the neuron "h" from the hidden layer
+        double[][] w23; //the weight of the link between the neuron "o" in the output layer (3) with the neuron "h" from the hidden layer
 
         public Backpropagation(int inputNeuronsNumber, int hiddenNeuronsNumber, int outputNeuronsNumber)
         {
@@ -38,33 +40,37 @@ namespace CharacterRecognition
             w12 = new double[hiddenNeuronsNumber][];
             for (var i = 0; i < hiddenNeuronsNumber; i++) w12[i] = new double[inputNeuronsNumber];
 
-            thresholdHidden = new double[hiddenNeuronsNumber];
+            biasHidden = new double[hiddenNeuronsNumber];
             hiddenValue = new double[hiddenNeuronsNumber];
 
             w23 = new double[outputNeuronsNumber][];
             for (var i = 0; i < outputNeuronsNumber; i++) w23[i] = new double[hiddenNeuronsNumber];
 
-            thresholdOutput = new double[outputNeuronsNumber];
+            biasOutput = new double[outputNeuronsNumber];
             outputValue = new double[outputNeuronsNumber];
 
             InitWeights();
         }
 
+        public Backpropagation()
+        {
+        }
+
         //activation function
         double ActivationFunction(double x) => 1.0 / (1 + Math.Exp(-x));
 
-        double ActivationFunctionDerived(double x) => (x*(1.0-x));
+        double ActivationFunctionDerived(double x) => (x * (1.0 - x));
 
         void InitWeights()
         {
             for (var h = 0; h < hiddenNeuronsNumber; h++)
             {
-                thresholdHidden[h] = rand.NextDouble();
+                biasHidden[h] = rand.NextDouble();
                 for (var i = 0; i < inputNeuronsNumber; i++) w12[h][i] = rand.NextDouble() - 0.5;
             }
             for (var o = 0; o < outputNeuronsNumber; o++)
             {
-                thresholdOutput[o] = rand.NextDouble();
+                biasOutput[o] = rand.NextDouble();
                 for (var h = 0; h < hiddenNeuronsNumber; h++) w23[o][h] = rand.NextDouble() - 0.5;
             }
         }
@@ -132,9 +138,9 @@ namespace CharacterRecognition
             for (var h = 0; h < hiddenNeuronsNumber; h++)
             {
                 double s = 0;
-                for (var i = 0; i < inputNeuronsNumber; i++) 
+                for (var i = 0; i < inputNeuronsNumber; i++)
                     s += w12[h][i] * inputValue[i];
-                s += thresholdHidden[h];
+                s += biasHidden[h];
                 hiddenValue[h] = ActivationFunction(s);
             }
         }
@@ -145,7 +151,7 @@ namespace CharacterRecognition
             {
                 double s = 0;
                 for (var h = 0; h < hiddenNeuronsNumber; h++) s += w23[o][h] * hiddenValue[h];
-                s += thresholdOutput[o];
+                s += biasOutput[o];
                 outputValue[o] = ActivationFunction(s);
             }
         }
@@ -170,7 +176,7 @@ namespace CharacterRecognition
             for (var o = 0; o < outputNeuronsNumber; o++)
             {
                 var dw = 2 * (outputValue[o] - target[o]) * ActivationFunctionDerived(outputValue[o]);
-                thresholdOutput[o] = thresholdOutput[o] - learningStep * dw;
+                biasOutput[o] = biasOutput[o] - learningStep * dw;
             }
         }
 
@@ -182,30 +188,130 @@ namespace CharacterRecognition
                 for (var o = 0; o < outputNeuronsNumber; o++)
                     sum += (outputValue[o] - target[o]) * ActivationFunctionDerived(outputValue[o]) * w23[o][h];
                 var dw = 2 * sum * ActivationFunctionDerived(hiddenValue[h]);
-                thresholdHidden[h] = thresholdHidden[h] - learningStep * dw;
+                biasHidden[h] = biasHidden[h] - learningStep * dw;
             }
         }
 
         void UpdateWeightsInputHiddenLayer(double[] target)
         {
             for (var h = 0; h < hiddenNeuronsNumber; h++)
-            for (var i = 0; i < inputNeuronsNumber; i++)
-            {
-                double sum = 0;
-                for (var o = 0; o < outputNeuronsNumber; o++)
-                    sum += (outputValue[o] - target[o]) * ActivationFunctionDerived(outputValue[o]) * w23[o][h];
-                var dw = 2 * sum * ActivationFunctionDerived(hiddenValue[h]) * inputValue[i];
-                w12[h][i] = w12[h][i] - learningStep * dw;
-            }
+                for (var i = 0; i < inputNeuronsNumber; i++)
+                {
+                    double sum = 0;
+                    for (var o = 0; o < outputNeuronsNumber; o++)
+                        sum += (outputValue[o] - target[o]) * ActivationFunctionDerived(outputValue[o]) * w23[o][h];
+                    var dw = 2 * sum * ActivationFunctionDerived(hiddenValue[h]) * inputValue[i];
+                    w12[h][i] = w12[h][i] - learningStep * dw;
+                }
         }
 
         void UpdateWeightsHiddenOutputLayer(double[] target)
         {
             for (var o = 0; o < outputNeuronsNumber; o++)
-            for (var h = 0; h < hiddenNeuronsNumber; h++)
+                for (var h = 0; h < hiddenNeuronsNumber; h++)
+                {
+                    var dw = 2 * (outputValue[o] - target[o]) * ActivationFunctionDerived(outputValue[o]) * hiddenValue[h];
+                    w23[o][h] = w23[o][h] - learningStep * dw;
+                }
+        }
+
+        public string SaveWeights(string path)
+        {
+            var s = new StringBuilder();
+
+            s.AppendLine($"w12 {w12.Length} {w12[0].Length}");
+            for (var i = 0; i < w12.Length; i++)
+                s.AppendLine(string.Join(",", w12[i]));
+
+            s.AppendLine($"w23 {w23.Length} {w23[0].Length}");
+            for (var i = 0; i < w23.Length; i++)
+                s.AppendLine(string.Join(",", w23[i]));
+            s.AppendLine($"biasHidden {biasHidden.Length}");
+            s.AppendLine(string.Join(",", biasHidden));
+            s.AppendLine($"biasOutput {biasOutput.Length}");
+            s.AppendLine(string.Join(",", biasOutput));
+            using (var sw = new StreamWriter(path))
             {
-                var dw = 2 * (outputValue[o] - target[o]) * ActivationFunctionDerived(outputValue[o]) * hiddenValue[h];
-                w23[o][h] = w23[o][h] - learningStep * dw;
+                sw.Write(s.ToString());
+            }
+
+            return s.ToString();
+        }
+
+        public void LoadWeights(string path)
+        {
+            using (var sr = new StreamReader(path))
+            {
+                while (!sr.EndOfStream)
+                {
+                    var line = sr.ReadLine();
+                    var items = line.Split(' ');
+                    switch (items[0])
+                    {
+                        case "w12":
+                            {
+                                var dim1 = int.Parse(items[1]);
+                                var dim2 = int.Parse(items[2]);
+                                inputNeuronsNumber = dim2;
+                                hiddenNeuronsNumber = dim1;
+                                inputValue = new double[inputNeuronsNumber];
+                                biasHidden = new double[hiddenNeuronsNumber];
+                                hiddenValue = new double[hiddenNeuronsNumber];
+                                w12 = new double[dim1][];
+                                for (var i = 0; i < dim1; i++)
+                                    w12[i] = new double[dim2];
+                                for (var i = 0; i < dim1; i++)
+                                {
+                                    var l = sr.ReadLine();
+                                    var values = l.Split(',');
+                                    if (values.Length == dim2)
+                                        for (var j = 0; j < values.Length; j++)
+                                            w12[i][j] = double.Parse(values[j]);
+                                }
+                            }
+                            break;
+                        case "w23":
+                            {
+                                var dim1 = int.Parse(items[1]);
+                                outputNeuronsNumber = dim1;
+                                biasOutput = new double[outputNeuronsNumber];
+                                outputValue = new double[outputNeuronsNumber];
+                                var dim2 = int.Parse(items[2]);
+                                w23 = new double[dim1][];
+                                for (var i = 0; i < dim1; i++)
+                                    w23[i] = new double[dim2];
+                                for (var i = 0; i < dim1; i++)
+                                {
+                                    var l = sr.ReadLine();
+                                    var values = l.Split(',');
+                                    if (values.Length == dim2)
+                                        for (var j = 0; j < values.Length; j++)
+                                            w23[i][j] = double.Parse(values[j]);
+                                }
+                            }
+                            break;
+                        case "biasHidden":
+                            {
+                                var dim1 = int.Parse(items[1]);
+                                biasHidden = new double[dim1];
+                                var values = sr.ReadLine()?.Split(',');
+                                for (var i = 0; i < dim1; i++)
+                                    if (values != null && values.Length == dim1)
+                                        biasHidden[i] = double.Parse(values[i]);
+                            }
+                            break;
+                        case "biasOutput":
+                            {
+                                var dim1 = int.Parse(items[1]);
+                                biasOutput = new double[dim1];
+                                var values = sr.ReadLine()?.Split(',');
+                                for (var i = 0; i < dim1; i++)
+                                    if (values != null && values.Length == dim1)
+                                        biasOutput[i] = double.Parse(values[i]);
+                            }
+                            break;
+                    }
+                }
             }
         }
     }

@@ -58,6 +58,7 @@ namespace CharacterRecognition
                 var network = new Backpropagation(img[0].Length, 200, example.Count);
                 network.Train(img, output);
                 backpropagation.Add(network);
+                network.SaveWeights($"perceptron{images.IndexOf(example)}.bp");
             }
             MessageBox.Show("Yeeeey");
         }
@@ -76,6 +77,22 @@ namespace CharacterRecognition
                 var output = backpropagation[classNumber].Run(input);
                 labelClass.Text = String.Join(" ", output);
                 labelClass.Refresh();
+
+            }
+        }
+
+        private void ButtonLoadWeights_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = false;
+            openFileDialog.Filter = "bp (*.bp)|*.bp";
+
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                var network = new Backpropagation();
+                network.LoadWeights(openFileDialog.FileName);
+                backpropagation.Add(network);
 
             }
         }

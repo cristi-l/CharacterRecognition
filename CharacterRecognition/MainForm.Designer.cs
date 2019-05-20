@@ -33,6 +33,7 @@
             this.buttonTest = new System.Windows.Forms.Button();
             this.labelClass = new System.Windows.Forms.Label();
             this.textBoxClass = new System.Windows.Forms.TextBox();
+            this.buttonLoadWeights = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonInit
@@ -47,7 +48,7 @@
             // 
             // buttonBackpropagation
             // 
-            this.buttonBackpropagation.Location = new System.Drawing.Point(12, 41);
+            this.buttonBackpropagation.Location = new System.Drawing.Point(12, 70);
             this.buttonBackpropagation.Name = "buttonBackpropagation";
             this.buttonBackpropagation.Size = new System.Drawing.Size(150, 23);
             this.buttonBackpropagation.TabIndex = 1;
@@ -57,7 +58,7 @@
             // 
             // buttonTest
             // 
-            this.buttonTest.Location = new System.Drawing.Point(12, 70);
+            this.buttonTest.Location = new System.Drawing.Point(12, 99);
             this.buttonTest.Name = "buttonTest";
             this.buttonTest.Size = new System.Drawing.Size(150, 23);
             this.buttonTest.TabIndex = 2;
@@ -82,11 +83,22 @@
             this.textBoxClass.TabIndex = 4;
             this.textBoxClass.Text = "0";
             // 
+            // buttonLoadWeights
+            // 
+            this.buttonLoadWeights.Location = new System.Drawing.Point(12, 41);
+            this.buttonLoadWeights.Name = "buttonLoadWeights";
+            this.buttonLoadWeights.Size = new System.Drawing.Size(150, 23);
+            this.buttonLoadWeights.TabIndex = 5;
+            this.buttonLoadWeights.Text = "Load Weights";
+            this.buttonLoadWeights.UseVisualStyleBackColor = true;
+            this.buttonLoadWeights.Click += new System.EventHandler(this.ButtonLoadWeights_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonLoadWeights);
             this.Controls.Add(this.textBoxClass);
             this.Controls.Add(this.labelClass);
             this.Controls.Add(this.buttonTest);
@@ -106,6 +118,7 @@
         private System.Windows.Forms.Button buttonTest;
         private System.Windows.Forms.Label labelClass;
         private System.Windows.Forms.TextBox textBoxClass;
+        private System.Windows.Forms.Button buttonLoadWeights;
     }
 }
 
