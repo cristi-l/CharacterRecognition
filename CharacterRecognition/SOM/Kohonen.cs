@@ -28,11 +28,10 @@ namespace CharacterRecognition.SOM
             InitializeConnections(inputDimension);
         }
 
-        public double Train(Vector[] input)
+        public void Train(Vector[] input)
         {
             var iteration = 0;
             var learningRate = LearningRate;
-            var distance = 0.0;
 
             while (iteration < NumberOfIterations)
             {
@@ -49,7 +48,7 @@ namespace CharacterRecognition.SOM
                     for (var y = yStart; y < yEnd; y++)
                     {
                         var processingNeuron = GetNeuron(x, y);
-                        distance = bmu.Distance(processingNeuron);
+                        var distance = bmu.Distance(processingNeuron);
                         if (distance <= Math.Pow(currentRadius, 2.0))
                         {
                             var distanceDrop = GetDistanceDrop(distance, currentRadius);
@@ -61,8 +60,6 @@ namespace CharacterRecognition.SOM
                 iteration++;
                 learningRate = LearningRate * Math.Exp(-(double) iteration / NumberOfIterations);
             }
-
-            return distance;
         }
 
         (int xStart, int xEnd, int yStart, int yEnd) GetRadiusIndexes(INeuron bmu, double currentRadius)

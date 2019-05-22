@@ -123,10 +123,10 @@ namespace CharacterRecognition
                 var inputVector = new Vector();
                 foreach (var inputValue in input) inputVector.Add(inputValue);
 
-                var distances = new List<double>();
-                foreach (var som in somMaps) distances.Add(som.Train(new[] {inputVector}));
+                foreach (var som in somMaps) 
+                som.Train(new[] {inputVector});
 
-                MessageBox.Show(string.Join(", ", distances));
+                MessageBox.Show("Done testing");
             }
         }
 
