@@ -26,13 +26,12 @@ namespace CharacterRecognition
             {
                 folderBrowser.SelectedPath = Directory.GetParent(Directory.GetCurrentDirectory()).ToString();
                 var result = folderBrowser.ShowDialog();
-                var imageLoader = new ImageLoader();
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowser.SelectedPath))
                 {
                     var folders = Directory.GetDirectories(folderBrowser.SelectedPath);
                     foreach (var folder in folders)
-                        images.Add(imageLoader.LoadImages(folder));
+                        images.Add(Utils.LoadImages(folder));
                 }
             }
         }
@@ -74,12 +73,12 @@ namespace CharacterRecognition
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                (var input,var count) = Utils.BmpToDoubleArray(new Bitmap(openFileDialog.FileName));
+                var example = Utils.BmpToTrainingExample(new Bitmap(openFileDialog.FileName));
                 var classNumber = int.Parse(textBoxClass.Text);
-                var output = backpropagation[classNumber].Run(input);
+                var output = backpropagation[classNumber].Run(example.binarizedValues);
                 labelClass.Text = string.Join(" ", output.ToString());
                 labelClass.Refresh();
-                Console.WriteLine($"Character {openFileDialog.FileName} has {count} points");
+                Console.WriteLine($"Character {openFileDialog.FileName} has {example.pointCount} points");
             }
         }
 
@@ -120,10 +119,10 @@ namespace CharacterRecognition
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                (var input,var count) = Utils.BmpToDoubleArray(new Bitmap(openFileDialog.FileName));
+                var example = Utils.BmpToTrainingExample(new Bitmap(openFileDialog.FileName));
 
                 var inputVector = new Vector();
-                foreach (var inputValue in input) inputVector.Add(inputValue);
+                foreach (var inputValue in example.binarizedValues) inputVector.Add(inputValue);
 
                 List<double> avgDistances = new List<double>();
                 //foreach (var som in somMaps)
