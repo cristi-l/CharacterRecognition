@@ -87,7 +87,7 @@
             // 
             // trainSOMButton
             // 
-            this.trainSOMButton.Location = new System.Drawing.Point(12, 115);
+            this.trainSOMButton.Location = new System.Drawing.Point(12, 128);
             this.trainSOMButton.Name = "trainSOMButton";
             this.trainSOMButton.Size = new System.Drawing.Size(150, 23);
             this.trainSOMButton.TabIndex = 5;
@@ -98,7 +98,7 @@
             // testSOMButton
             // 
             this.testSOMButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.testSOMButton.Location = new System.Drawing.Point(12, 153);
+            this.testSOMButton.Location = new System.Drawing.Point(12, 157);
             this.testSOMButton.Name = "testSOMButton";
             this.testSOMButton.Size = new System.Drawing.Size(150, 23);
             this.testSOMButton.TabIndex = 6;
@@ -116,7 +116,7 @@
             this.buttonLoadWeights.UseVisualStyleBackColor = true;
             this.buttonLoadWeights.Click += new System.EventHandler(this.ButtonLoadWeights_Click);
             // 
-            // Resources
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

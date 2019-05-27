@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
-using CharacterRecognition.SOM;
-using CharacterRecognition.SOM.Vectors;
 
 namespace CharacterRecognition
 {
     public partial class MainForm : Form
     {
         readonly List<Backpropagation> backpropagation = new List<Backpropagation>();
-        readonly List<List<double[]>> images = new List<List<double[]>>();
-        readonly List<Kohonen> somMaps = new List<Kohonen>();
+        readonly List<List<Image>> images = new List<List<Image>>();
+        readonly List<SOM.Som> somMaps = new List<SOM.Som>();
 
         public MainForm()
         {
@@ -25,13 +23,12 @@ namespace CharacterRecognition
             {
                 folderBrowser.SelectedPath = Directory.GetParent(Directory.GetCurrentDirectory()).ToString();
                 var result = folderBrowser.ShowDialog();
-                var imageLoader = new ImageLoader();
-
+                
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowser.SelectedPath))
                 {
                     var folders = Directory.GetDirectories(folderBrowser.SelectedPath);
                     foreach (var folder in folders)
-                        images.Add(imageLoader.LoadImages(folder));
+                        images.Add(ImageLoader.LoadImages(folder));
                 }
             }
         }
@@ -44,7 +41,7 @@ namespace CharacterRecognition
                 var img = new double[classImages.Count][];
                 for (var i = 0; i < classImages.Count; i++)
                 {
-                    img[i] = classImages[i];
+                    img[i] = classImages[i].GetImageAsArray();
                     for (var j = 0; j < classImages.Count; j++)
                         output[i] = new double[classImages.Count];
                     for (var j = 0; j < classImages.Count; j++)
@@ -73,9 +70,9 @@ namespace CharacterRecognition
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                var input = Utils.BmpToDoubleArray(new Bitmap(openFileDialog.FileName));
+                var input = Utils.BmpToDoubleArray(openFileDialog.FileName);
                 var classNumber = int.Parse(textBoxClass.Text);
-                var output = backpropagation[classNumber].Run(input);
+                var output = backpropagation[classNumber].Run(input.GetImageAsArray());
                 labelClass.Text = string.Join(" ", output);
                 labelClass.Refresh();
             }
@@ -83,29 +80,17 @@ namespace CharacterRecognition
 
         void TrainSOMButton_Click(object sender, EventArgs e)
         {
-            IVector inputVector = null;
-
             foreach (var classImages in images)
             {
-                var input = new Vector[classImages.Count];
-                var index = 0;
-
-                foreach (var image in classImages)
+                var som = new SOM.Som();
+                foreach (var classImage in classImages)
                 {
-                    inputVector = new Vector();
-                    foreach (var value in image) inputVector.Add(value);
-                    input[index++] = (Vector) inputVector;
+                    som.TrainNetwork(classImage.Pixels.Where(x=>x.Value==1).ToList());
                 }
-
-                if (inputVector != null)
-                {
-                    var som = new Kohonen(5, 5, inputVector.Count, 100, 0.5);
-                    som.Train(input);
-                    somMaps.Add(som);
-                }
+                somMaps.Add(som);
             }
 
-            MessageBox.Show("Done training SOM");
+            MessageBox.Show("Done training SOMs!!!");
         }
 
         void TestSOMButton_Click(object sender, EventArgs e)
@@ -118,15 +103,17 @@ namespace CharacterRecognition
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                var input = Utils.BmpToDoubleArray(new Bitmap(openFileDialog.FileName));
+                var input = Utils.BmpToDoubleArray(openFileDialog.FileName);
+                var list = new List<double>();
+                foreach (var somMap in somMaps)
+                {
+                    list.Add(somMap.Test(input.Pixels.Where(x => x.Value == 1).ToList()));
+                }
 
-                var inputVector = new Vector();
-                foreach (var inputValue in input) inputVector.Add(inputValue);
+                labelClass.Text = string.Join(" ", list);
 
-                foreach (var som in somMaps) 
-                som.Train(new[] {inputVector});
-
-                MessageBox.Show("Done testing");
+                textBoxClass.Text = (list.IndexOf(list.Min())+1).ToString();
+                labelClass.Refresh();
             }
         }
 

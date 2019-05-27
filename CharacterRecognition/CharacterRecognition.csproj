@@ -62,13 +62,14 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainForm1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MainForm.resx</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SOM\Kohonen.cs" />
-    <Compile Include="SOM\Neurons\INeuron.cs" />
-    <Compile Include="SOM\Neurons\Neuron.cs" />
-    <Compile Include="SOM\Vectors\IVector.cs" />
-    <Compile Include="SOM\Vectors\Vector.cs" />
+    <Compile Include="SOM\SOM.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -99,71 +100,25 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Characters\Fonts10x16\0.jpg" />
-    <Content Include="Characters\Fonts10x16\1.jpg" />
-    <Content Include="Characters\Fonts10x16\2.jpg" />
-    <Content Include="Characters\Fonts10x16\3.jpg" />
-    <Content Include="Characters\Fonts10x16\4.jpg" />
-    <Content Include="Characters\Fonts10x16\5.jpg" />
-    <Content Include="Characters\Fonts10x16\6.jpg" />
-    <Content Include="Characters\Fonts10x16\7.jpg" />
-    <Content Include="Characters\Fonts10x16\8.jpg" />
-    <Content Include="Characters\Fonts10x16\9.jpg" />
-    <Content Include="Characters\Fonts10x16\a.jpg" />
-    <Content Include="Characters\Fonts10x16\b.jpg" />
-    <Content Include="Characters\Fonts10x16\c.jpg" />
-    <Content Include="Characters\Fonts10x16\d.jpg" />
-    <Content Include="Characters\Fonts10x16\e.jpg" />
-    <Content Include="Characters\Fonts10x16\f.jpg" />
-    <Content Include="Characters\Fonts10x16\g.jpg" />
-    <Content Include="Characters\Fonts10x16\h.jpg" />
-    <Content Include="Characters\Fonts10x16\i.jpg" />
-    <Content Include="Characters\Fonts10x16\j.jpg" />
-    <Content Include="Characters\Fonts10x16\k.jpg" />
-    <Content Include="Characters\Fonts10x16\l.jpg" />
-    <Content Include="Characters\Fonts10x16\m.jpg" />
-    <Content Include="Characters\Fonts10x16\n.jpg" />
-    <Content Include="Characters\Fonts10x16\o.jpg" />
-    <Content Include="Characters\Fonts10x16\p.jpg" />
-    <Content Include="Characters\Fonts10x16\q.jpg" />
-    <Content Include="Characters\Fonts10x16\r.jpg" />
-    <Content Include="Characters\Fonts10x16\s.jpg" />
-    <Content Include="Characters\Fonts10x16\t.jpg" />
-    <Content Include="Characters\Fonts10x16\u.jpg" />
-    <Content Include="Characters\Fonts10x16\v.jpg" />
-    <Content Include="Characters\Fonts10x16\w.jpg" />
-    <Content Include="Characters\Fonts10x16\x.jpg" />
-    <Content Include="Characters\Fonts10x16\y.jpg" />
-    <Content Include="Characters\Fonts10x16\z.jpg" />
-    <Content Include="Characters\Fonts20x32\0.bmp" />
-    <Content Include="Characters\Fonts20x32\1.bmp" />
-    <Content Include="Characters\Fonts20x32\2.bmp" />
-    <Content Include="Characters\Fonts20x32\3.bmp" />
-    <Content Include="Characters\Fonts20x32\4.bmp" />
-    <Content Include="Characters\Fonts20x32\5.bmp" />
-    <Content Include="Characters\Fonts20x32\6.bmp" />
-    <Content Include="Characters\Fonts20x32\7.bmp" />
-    <Content Include="Characters\Fonts20x32\8.bmp" />
-    <Content Include="Characters\Fonts20x32\9.bmp" />
-    <Content Include="Characters\class1\a.bmp" />
-    <Content Include="Characters\class2\b.bmp" />
-    <Content Include="Characters\class1\c.bmp" />
-    <Content Include="Characters\class2\d.bmp" />
-    <Content Include="Characters\class1\e.bmp" />
+    <Content Include="Characters\class2\a.bmp" />
+    <Content Include="Characters\class1\b.bmp" />
+    <Content Include="Characters\class2\c.bmp" />
+    <Content Include="Characters\class5\d.bmp" />
+    <Content Include="Characters\class7\e.bmp" />
     <Content Include="Characters\class3\f.bmp" />
-    <Content Include="Characters\class4\g.bmp" />
+    <Content Include="Characters\class2\g.bmp" />
     <Content Include="Characters\class2\h.bmp" />
     <Content Include="Characters\class3\i.bmp" />
-    <Content Include="Characters\class3\j.bmp" />
+    <Content Include="Characters\class4\j.bmp" />
     <Content Include="Characters\class6\k.bmp" />
     <Content Include="Characters\class3\l.bmp" />
     <Content Include="Characters\class5\m.bmp" />
-    <Content Include="Characters\class5\n.bmp" />
-    <Content Include="Characters\class1\o.bmp" />
+    <Content Include="Characters\class2\n.bmp" />
+    <Content Include="Characters\class2\o.bmp" />
     <Content Include="Characters\class4\p.bmp" />
-    <Content Include="Characters\class4\q.bmp" />
-    <Content Include="Characters\class5\r.bmp" />
-    <Content Include="Characters\class1\s.bmp" />
+    <Content Include="Characters\class2\q.bmp" />
+    <Content Include="Characters\class3\r.bmp" />
+    <Content Include="Characters\class7\s.bmp" />
     <Content Include="Characters\class3\t.bmp" />
     <Content Include="Characters\class1\u.bmp" />
     <Content Include="Characters\class1\v.bmp" />
@@ -171,43 +126,6 @@
     <Content Include="Characters\class6\x.bmp" />
     <Content Include="Characters\class4\y.bmp" />
     <Content Include="Characters\class6\z.bmp" />
-    <Content Include="Characters\Fonts5x8\#Sablon.jpg" />
-    <Content Include="Characters\Fonts5x8\0.jpg" />
-    <Content Include="Characters\Fonts5x8\1.jpg" />
-    <Content Include="Characters\Fonts5x8\2.jpg" />
-    <Content Include="Characters\Fonts5x8\3.jpg" />
-    <Content Include="Characters\Fonts5x8\4.jpg" />
-    <Content Include="Characters\Fonts5x8\5.jpg" />
-    <Content Include="Characters\Fonts5x8\6.jpg" />
-    <Content Include="Characters\Fonts5x8\7.jpg" />
-    <Content Include="Characters\Fonts5x8\8.jpg" />
-    <Content Include="Characters\Fonts5x8\9.jpg" />
-    <Content Include="Characters\Fonts5x8\a.jpg" />
-    <Content Include="Characters\Fonts5x8\b.jpg" />
-    <Content Include="Characters\Fonts5x8\c.jpg" />
-    <Content Include="Characters\Fonts5x8\d.jpg" />
-    <Content Include="Characters\Fonts5x8\e.jpg" />
-    <Content Include="Characters\Fonts5x8\f.jpg" />
-    <Content Include="Characters\Fonts5x8\g.jpg" />
-    <Content Include="Characters\Fonts5x8\h.jpg" />
-    <Content Include="Characters\Fonts5x8\i.jpg" />
-    <Content Include="Characters\Fonts5x8\j.jpg" />
-    <Content Include="Characters\Fonts5x8\k.jpg" />
-    <Content Include="Characters\Fonts5x8\l.jpg" />
-    <Content Include="Characters\Fonts5x8\m.jpg" />
-    <Content Include="Characters\Fonts5x8\n.jpg" />
-    <Content Include="Characters\Fonts5x8\o.jpg" />
-    <Content Include="Characters\Fonts5x8\p.jpg" />
-    <Content Include="Characters\Fonts5x8\q.jpg" />
-    <Content Include="Characters\Fonts5x8\r.jpg" />
-    <Content Include="Characters\Fonts5x8\s.jpg" />
-    <Content Include="Characters\Fonts5x8\t.jpg" />
-    <Content Include="Characters\Fonts5x8\u.jpg" />
-    <Content Include="Characters\Fonts5x8\v.jpg" />
-    <Content Include="Characters\Fonts5x8\w.jpg" />
-    <Content Include="Characters\Fonts5x8\x.jpg" />
-    <Content Include="Characters\Fonts5x8\y.jpg" />
-    <Content Include="Characters\Fonts5x8\z.jpg" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

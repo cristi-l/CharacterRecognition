@@ -22,34 +22,72 @@ namespace CharacterRecognition
 
     public static class Utils
     {
-        public static double[] BmpToDoubleArray(Bitmap bitmap)
+        public static Image BmpToDoubleArray(String file)
         {
-            var binarizedValues = new List<double>(bitmap.Width * bitmap.Height);
-            for (var i = 0; i < bitmap.Width; i++)
-            for (var j = 0; j < bitmap.Height; j++)
+            var bitmap = new Bitmap(file);
+            var image = new Image
             {
-                var c = bitmap.GetPixel(i, j);
+                Label = file.Split('.')[0].Split('\\')[file.Split('.')[0].Split('\\').Length - 1]
+            };
+            for (var row = 0; row < bitmap.Height; row++)
+            for (var column = 0; column < bitmap.Width; column++)
+            {
+                var imagePixel = new ImagePixel();
+                var c = bitmap.GetPixel(column, row);
                 var gray = (c.R + c.G + c.B) / 3;
+                imagePixel.X = column;
+                imagePixel.Y = row;
                 if (gray < 20)
-                    binarizedValues.Add(1);
+                {
+                    imagePixel.Value = 1;
+                }
+
                 else
-                    binarizedValues.Add(0);
+                    imagePixel.Value = 0;
+                image.Pixels.Add(imagePixel);
             }
 
-            return binarizedValues.ToArray();
+            return image;
         }
     }
 
     public class ImageLoader
     {
-        public List<double[]> LoadImages(string path)
+        public static List<Image> LoadImages(string path)
         {
-            var returnValue = new List<double[]>();
+            var returnValue = new List<Image>();
             foreach (var file in Directory.EnumerateFiles(path))
                 if (file.EndsWith(".bmp"))
-                    returnValue.Add(Utils.BmpToDoubleArray(new Bitmap(file)));
+                    returnValue.Add(Utils.BmpToDoubleArray(file));
 
             return returnValue;
         }
+    }
+
+    public class Image
+    {
+        public String Label { get; set; }
+        public List<ImagePixel> Pixels { get; set; }
+        public double[] GetImageAsArray()
+        {
+            var imageAsArray = new List<double>();
+            foreach (var pixel in Pixels)
+            {
+                imageAsArray.Add(pixel.Value);
+            }
+
+            return imageAsArray.ToArray();
+        }
+        public Image()
+        {
+            Pixels = new List<ImagePixel>();
+        }
+    }
+
+    public class ImagePixel
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Value { get; set; }
     }
 }
