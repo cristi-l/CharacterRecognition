@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using CharacterRecognition.SOM;
 using CharacterRecognition.SOM.Vectors;
@@ -12,8 +12,7 @@ namespace CharacterRecognition
     public partial class MainForm : Form
     {
         readonly List<Backpropagation> backpropagation = new List<Backpropagation>();
-        //readonly List<List<double[]>> images = new List<List<double[]>>();
-        readonly List<List<Image>> images = new List<List<Image>>();
+        readonly List<List<double[]>> images = new List<List<double[]>>();
         readonly List<Kohonen> somMaps = new List<Kohonen>();
 
         public MainForm()
@@ -27,7 +26,6 @@ namespace CharacterRecognition
             {
                 folderBrowser.SelectedPath = Directory.GetParent(Directory.GetCurrentDirectory()).ToString();
                 var result = folderBrowser.ShowDialog();
-                var imageLoader = new ImageLoader();
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowser.SelectedPath))
                 {
@@ -42,14 +40,14 @@ namespace CharacterRecognition
         }
 
         void buttonBackpropagation_Click(object sender, EventArgs e)
-        { 
+        {
             foreach (var classImages in images)
             {
                 var output = new double[classImages.Count][];
                 var img = new double[classImages.Count][];
                 for (var i = 0; i < classImages.Count; i++)
                 {
-                    img[i] = classImages[i].GetImageAsArray();
+                    img[i] = classImages[i];
                     for (var j = 0; j < classImages.Count; j++)
                         output[i] = new double[classImages.Count];
                     for (var j = 0; j < classImages.Count; j++)
@@ -78,11 +76,12 @@ namespace CharacterRecognition
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                var input = Utils.BmpToDoubleArray(openFileDialog.FileName);
+                var example = Utils.BmpToTrainingExample(new Bitmap(openFileDialog.FileName));
                 var classNumber = int.Parse(textBoxClass.Text);
-                var output = backpropagation[classNumber].Run(input.GetImageAsArray());
-                labelClass.Text = string.Join(" ", output);
+                var output = backpropagation[classNumber].Run(example.binarizedValues);
+                labelClass.Text = string.Join(" ", output.ToString());
                 labelClass.Refresh();
+                Console.WriteLine($"Character {openFileDialog.FileName} has {example.pointCount} points");
             }
         }
 
@@ -123,15 +122,16 @@ namespace CharacterRecognition
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                //var input = Utils.BmpToDoubleArray(new Bitmap(openFileDialog.FileName));
+                var example = Utils.BmpToTrainingExample(new Bitmap(openFileDialog.FileName));
 
-               // var inputVector = new Vector();
-                //foreach (var inputValue in input) inputVector.Add(inputValue);
+                var inputVector = new Vector();
+                foreach (var inputValue in example.binarizedValues) inputVector.Add(inputValue);
 
-              //  foreach (var som in somMaps) 
-               // som.Train(new[] {inputVector});
+                List<double> avgDistances = new List<double>();
+                //foreach (var som in somMaps)
+                //    avgDistances.Add(som.Run(inputVector));
 
-                //MessageBox.Show("Done testing");
+                MessageBox.Show(string.Join(",",avgDistances));
             }
         }
 
