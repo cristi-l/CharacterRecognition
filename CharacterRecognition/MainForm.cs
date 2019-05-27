@@ -34,7 +34,7 @@ namespace CharacterRecognition
                     var folders = Directory.GetDirectories(folderBrowser.SelectedPath);
                     foreach (var folder in folders)
                     {
-                        images.Add(imageLoader.LoadImages(folder));
+                        images.Add(Utils.LoadImages(folder));
                     }
                 }
             }
@@ -98,7 +98,7 @@ namespace CharacterRecognition
                 foreach (var image in classImages)
                 {
                     inputVector = new Vector();
-                    foreach (var value in image) inputVector.Add(value);
+                    foreach (var value in image.GetImageAsArray()) inputVector.Add(value);
                     input[index++] = (Vector) inputVector;
                 }
 

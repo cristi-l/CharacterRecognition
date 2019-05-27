@@ -32,7 +32,8 @@ namespace CharacterRecognition.SOM
         {
             var iteration = 0;
             var learningRate = LearningRate;
-
+            var averageDistance = 0;
+            var totalDistance = 0;
             while (iteration < NumberOfIterations)
             {
                 var currentRadius = CalculateNeighborhoodRadius(iteration);
@@ -45,35 +46,35 @@ namespace CharacterRecognition.SOM
                     var (xStart, xEnd, yStart, yEnd) = GetRadiusIndexes(bmu, currentRadius);
 
                     for (var x = xStart; x < xEnd; x++)
-                    for (var y = yStart; y < yEnd; y++)
-                    {
-                        var processingNeuron = GetNeuron(x, y);
-                        var distance = bmu.Distance(processingNeuron);
-                        if (distance <= Math.Pow(currentRadius, 2.0))
+                        for (var y = yStart; y < yEnd; y++)
                         {
-                            var distanceDrop = GetDistanceDrop(distance, currentRadius);
-                            processingNeuron.UpdateWeights(currentInput, learningRate, distanceDrop);
+                            var processingNeuron = GetNeuron(x, y);
+                            var distance = bmu.Distance(processingNeuron);
+                            if (distance <= Math.Pow(currentRadius, 2.0))
+                            {
+                                var distanceDrop = GetDistanceDrop(distance, currentRadius);
+                                processingNeuron.UpdateWeights(currentInput, learningRate, distanceDrop);
+                            }
                         }
-                    }
                 }
 
                 iteration++;
-                learningRate = LearningRate * Math.Exp(-(double) iteration / NumberOfIterations);
+                learningRate = LearningRate * Math.Exp(-(double)iteration / NumberOfIterations);
             }
         }
-
+      
         (int xStart, int xEnd, int yStart, int yEnd) GetRadiusIndexes(INeuron bmu, double currentRadius)
         {
-            var xStart = (int) (bmu.X - currentRadius - 1);
+            var xStart = (int)(bmu.X - currentRadius - 1);
             xStart = xStart < 0 ? 0 : xStart;
 
-            var xEnd = (int) (xStart + currentRadius * 2 + 1);
+            var xEnd = (int)(xStart + currentRadius * 2 + 1);
             if (xEnd > Width) xEnd = Width;
 
-            var yStart = (int) (bmu.Y - currentRadius - 1);
+            var yStart = (int)(bmu.Y - currentRadius - 1);
             yStart = yStart < 0 ? 0 : yStart;
 
-            var yEnd = (int) (yStart + currentRadius * 2 + 1);
+            var yEnd = (int)(yStart + currentRadius * 2 + 1);
             if (yEnd > Height) yEnd = Height;
 
             return (xStart, xEnd, yStart, yEnd);
@@ -103,15 +104,15 @@ namespace CharacterRecognition.SOM
             var bestDist = input.EuclidianDistance(bmu.Weights);
 
             for (var i = 0; i < Width; i++)
-            for (var j = 0; j < Height; j++)
-            {
-                var distance = input.EuclidianDistance(Matrix[i, j].Weights);
-                if (distance < bestDist)
+                for (var j = 0; j < Height; j++)
                 {
-                    bmu = Matrix[i, j];
-                    bestDist = distance;
+                    var distance = input.EuclidianDistance(Matrix[i, j].Weights);
+                    if (distance < bestDist)
+                    {
+                        bmu = Matrix[i, j];
+                        bestDist = distance;
+                    }
                 }
-            }
 
             return bmu;
         }
@@ -119,8 +120,8 @@ namespace CharacterRecognition.SOM
         void InitializeConnections(int inputDimension)
         {
             for (var i = 0; i < Width; i++)
-            for (var j = 0; j < Height; j++)
-                Matrix[i, j] = new Neuron(inputDimension) {X = i, Y = j};
+                for (var j = 0; j < Height; j++)
+                    Matrix[i, j] = new Neuron(inputDimension) { X = i, Y = j };
         }
     }
 }
