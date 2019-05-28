@@ -73,8 +73,11 @@ namespace CharacterRecognition
                 var input = Utils.BmpToDoubleArray(openFileDialog.FileName);
                 var classNumber = int.Parse(textBoxClass.Text);
                 var output = backpropagation[classNumber].Run(input.GetImageAsArray());
-                labelClass.Text = string.Join(" ", output);
-                labelClass.Refresh();
+                labelLetter.Text = string.Join("\n", output);
+                double max = output.Max();
+                labelPredictedLetter.Text = (Array.IndexOf(output, max)+1).ToString();
+                labelPredictedLetter.Refresh();
+                labelLetter.Refresh();
             }
         }
 
@@ -110,7 +113,7 @@ namespace CharacterRecognition
                     list.Add(somMap.Test(input.Pixels.Where(x => x.Value == 1).ToList()));
                 }
 
-                labelClass.Text = string.Join(" ", list);
+                labelClass.Text = string.Join("\n", list);
 
                 textBoxClass.Text = (list.IndexOf(list.Min())+1).ToString();
                 labelClass.Refresh();
