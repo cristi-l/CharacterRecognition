@@ -71,13 +71,17 @@ namespace CharacterRecognition
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 var input = Utils.BmpToDoubleArray(openFileDialog.FileName);
+                labelSelectedFile.Text = Path.GetFileName(openFileDialog.FileName);
                 var classNumber = int.Parse(textBoxClass.Text);
+                TestBP(input, classNumber);
+                /*
                 var output = backpropagation[classNumber].Run(input.GetImageAsArray());
                 labelLetter.Text = string.Join("\n", output);
                 double max = output.Max();
                 labelPredictedLetter.Text = (Array.IndexOf(output, max)+1).ToString();
                 labelPredictedLetter.Refresh();
                 labelLetter.Refresh();
+                */
             }
         }
 
@@ -107,6 +111,7 @@ namespace CharacterRecognition
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 var input = Utils.BmpToDoubleArray(openFileDialog.FileName);
+                labelSelectedFile.Text = Path.GetFileName(openFileDialog.FileName);
                 var list = new List<double>();
                 foreach (var somMap in somMaps)
                 {
@@ -145,6 +150,46 @@ namespace CharacterRecognition
                     }
                 }
             }
+        }
+
+        private void buttonTestBoth_Click(object sender, EventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Multiselect = false,
+                Filter = "bmp (*.bmp)|*.bmp"
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                var filename = openFileDialog.FileName;
+                labelSelectedFile.Text = Path.GetFileName(filename);
+                var input = Utils.BmpToDoubleArray(filename);
+                var list = new List<double>();
+                foreach (var somMap in somMaps)
+                {
+                    list.Add(somMap.Test(input.Pixels.Where(x => x.Value == 1).ToList()));
+                }
+
+                labelClass.Text = string.Join("\n", list);
+
+                textBoxClass.Text = (list.IndexOf(list.Min()) + 1).ToString();
+                labelClass.Refresh();
+
+                //BP
+                var classNumber = int.Parse(textBoxClass.Text) - 1;
+                TestBP(input, classNumber);
+            }
+        }
+
+        private void TestBP(Image input, int classNumber)
+        {
+            var output = backpropagation[classNumber].Run(input.GetImageAsArray());
+            labelLetter.Text = string.Join("\n", output);
+            double max = output.Max();
+            labelPredictedLetter.Text = (Array.IndexOf(output, max) + 1).ToString();
+            labelPredictedLetter.Refresh();
+            labelLetter.Refresh();
         }
     }
 }

@@ -44,6 +44,9 @@
             this.labelLetter = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.labelPredictedLetter = new System.Windows.Forms.Label();
+            this.buttonTestBoth = new System.Windows.Forms.Button();
+            this.labelSelectedFile = new System.Windows.Forms.Label();
+            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,7 +83,7 @@
             // labelClass
             // 
             this.labelClass.AutoSize = true;
-            this.labelClass.Location = new System.Drawing.Point(9, 232);
+            this.labelClass.Location = new System.Drawing.Point(9, 264);
             this.labelClass.Name = "labelClass";
             this.labelClass.Size = new System.Drawing.Size(32, 13);
             this.labelClass.TabIndex = 3;
@@ -88,7 +91,7 @@
             // 
             // textBoxClass
             // 
-            this.textBoxClass.Location = new System.Drawing.Point(138, 164);
+            this.textBoxClass.Location = new System.Drawing.Point(138, 208);
             this.textBoxClass.Name = "textBoxClass";
             this.textBoxClass.Size = new System.Drawing.Size(74, 20);
             this.textBoxClass.TabIndex = 4;
@@ -127,9 +130,10 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.buttonTestBoth);
             this.groupBox1.Location = new System.Drawing.Point(12, 47);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 100);
+            this.groupBox1.Size = new System.Drawing.Size(200, 134);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "SOM";
@@ -149,7 +153,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 168);
+            this.label1.Location = new System.Drawing.Point(9, 212);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(123, 13);
             this.label1.TabIndex = 9;
@@ -158,7 +162,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 210);
+            this.label2.Location = new System.Drawing.Point(9, 242);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(71, 13);
             this.label2.TabIndex = 10;
@@ -167,7 +171,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(251, 215);
+            this.label3.Location = new System.Drawing.Point(251, 242);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(128, 13);
             this.label3.TabIndex = 11;
@@ -176,7 +180,7 @@
             // labelLetter
             // 
             this.labelLetter.AutoSize = true;
-            this.labelLetter.Location = new System.Drawing.Point(251, 236);
+            this.labelLetter.Location = new System.Drawing.Point(251, 263);
             this.labelLetter.Name = "labelLetter";
             this.labelLetter.Size = new System.Drawing.Size(34, 13);
             this.labelLetter.TabIndex = 12;
@@ -185,7 +189,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(251, 193);
+            this.label4.Location = new System.Drawing.Point(251, 214);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(78, 13);
             this.label4.TabIndex = 13;
@@ -194,17 +198,37 @@
             // labelPredictedLetter
             // 
             this.labelPredictedLetter.AutoSize = true;
-            this.labelPredictedLetter.Location = new System.Drawing.Point(344, 193);
+            this.labelPredictedLetter.Location = new System.Drawing.Point(344, 214);
             this.labelPredictedLetter.Name = "labelPredictedLetter";
             this.labelPredictedLetter.Size = new System.Drawing.Size(10, 13);
             this.labelPredictedLetter.TabIndex = 14;
             this.labelPredictedLetter.Text = "-";
+            // 
+            // buttonTestBoth
+            // 
+            this.buttonTestBoth.Location = new System.Drawing.Point(23, 88);
+            this.buttonTestBoth.Name = "buttonTestBoth";
+            this.buttonTestBoth.Size = new System.Drawing.Size(150, 23);
+            this.buttonTestBoth.TabIndex = 15;
+            this.buttonTestBoth.Text = "Test SOM + BP";
+            this.buttonTestBoth.UseVisualStyleBackColor = true;
+            this.buttonTestBoth.Click += new System.EventHandler(this.buttonTestBoth_Click);
+            // 
+            // labelSelectedFile
+            // 
+            this.labelSelectedFile.AutoSize = true;
+            this.labelSelectedFile.Location = new System.Drawing.Point(12, 187);
+            this.labelSelectedFile.Name = "labelSelectedFile";
+            this.labelSelectedFile.Size = new System.Drawing.Size(65, 13);
+            this.labelSelectedFile.TabIndex = 15;
+            this.labelSelectedFile.Text = "Selected file";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.labelSelectedFile);
             this.Controls.Add(this.labelPredictedLetter);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.labelLetter);
@@ -220,6 +244,7 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "MainForm";
             this.Text = "Form1";
+            this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -244,6 +269,8 @@
         private System.Windows.Forms.Label labelLetter;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label labelPredictedLetter;
+        private System.Windows.Forms.Button buttonTestBoth;
+        private System.Windows.Forms.Label labelSelectedFile;
     }
 }
 
