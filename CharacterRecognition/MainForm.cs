@@ -73,15 +73,14 @@ namespace CharacterRecognition
                 var input = Utils.BmpToDoubleArray(openFileDialog.FileName);
                 labelSelectedFile.Text = Path.GetFileName(openFileDialog.FileName);
                 var classNumber = int.Parse(textBoxClass.Text);
-                TestBP(input, classNumber);
-                /*
+                
                 var output = backpropagation[classNumber].Run(input.GetImageAsArray());
                 labelLetter.Text = string.Join("\n", output);
                 double max = output.Max();
                 labelPredictedLetter.Text = (Array.IndexOf(output, max)+1).ToString();
                 labelPredictedLetter.Refresh();
                 labelLetter.Refresh();
-                */
+                
             }
         }
 
@@ -95,7 +94,10 @@ namespace CharacterRecognition
                     som.TrainNetwork(classImage.Pixels.Where(x=>x.Value==1).ToList());
                 }
                 somMaps.Add(som);
+                if (!som.verifica())
+                    MessageBox.Show("err");
             }
+            
 
             MessageBox.Show("Done training SOMs!!!");
         }
@@ -172,24 +174,27 @@ namespace CharacterRecognition
                 }
 
                 labelClass.Text = string.Join("\n", list);
-
                 textBoxClass.Text = (list.IndexOf(list.Min()) + 1).ToString();
                 labelClass.Refresh();
 
                 //BP
                 var classNumber = int.Parse(textBoxClass.Text) - 1;
-                TestBP(input, classNumber);
+                var output = backpropagation[classNumber].Run(input.GetImageAsArray());
+
+                labelLetter.Text = string.Join("\n", output);
+                double max = output.Max();
+                if (max > 0.5)
+                {
+                    labelPredictedLetter.Text = (Array.IndexOf(output, max) + 1).ToString();
+                    labelPredictedLetter.Refresh();
+                    labelLetter.Refresh();
+                }
+                else
+                {
+                    labelPredictedLetter.Text = "Not found";
+                }
             }
         }
 
-        private void TestBP(Image input, int classNumber)
-        {
-            var output = backpropagation[classNumber].Run(input.GetImageAsArray());
-            labelLetter.Text = string.Join("\n", output);
-            double max = output.Max();
-            labelPredictedLetter.Text = (Array.IndexOf(output, max) + 1).ToString();
-            labelPredictedLetter.Refresh();
-            labelLetter.Refresh();
-        }
     }
 }

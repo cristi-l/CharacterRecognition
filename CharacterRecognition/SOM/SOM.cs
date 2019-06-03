@@ -31,6 +31,20 @@ namespace CharacterRecognition.SOM
                 }
             }
         }
+        public bool verifica()
+        {
+            for (int i = 0; i < NetworkSize; i++)
+            {
+                for (int j = 0; j < NetworkSize; j++)
+                {
+                    if (Neurons[i, j].X < 0 || Neurons[i, j].X > 20)
+                        return false;
+                    if (Neurons[i, j].Y < 0 || Neurons[i, j].Y > 32)
+                        return false;
+                }
+            }
+            return true;
+        }
 
         public void TrainNetwork(List<ImagePixel> pixels)
         {
@@ -124,7 +138,8 @@ namespace CharacterRecognition.SOM
 
         private double ManhattanDistance(Neuron a, Neuron b)
         {
-            return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+            //return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+            return Math.Sqrt(Math.Pow(a.X - b.X,2) + Math.Pow(a.Y - b.Y,2));
         }
         public class Neuron
         {
